@@ -1,21 +1,28 @@
 import React from "react";
-import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import {
+  useSignInWithGithub,
+  useSignInWithGoogle,
+} from "react-firebase-hooks/auth";
 import auth from "./../../../firebase.init";
 import { useNavigate } from "react-router-dom";
 
 const SocialLogin = () => {
   const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+  const [signInWithGithub, user1, loading1, error1] = useSignInWithGithub(auth);
   const navigate = useNavigate();
   let errorElement;
 
-  if (error) {
+  if (error || error1) {
     errorElement = (
       <div>
-        <p>Error: {error.message}</p>
+        <p>
+          Error: {error?.message}
+          {error1?.message}
+        </p>
       </div>
     );
   }
-  if (user) {
+  if (user || user1) {
     navigate("/home");
   }
   return (
@@ -35,7 +42,12 @@ const SocialLogin = () => {
         </button>
       </div>
       <div className="my-2">
-        <button className="btn btn-primary w-50 d-block mx-auto">Github</button>
+        <button
+          onClick={() => signInWithGithub()}
+          className="btn btn-primary w-50 d-block mx-auto"
+        >
+          Github
+        </button>
       </div>
     </div>
   );

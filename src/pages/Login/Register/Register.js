@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Register.css";
 import { useNavigate } from "react-router-dom";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import auth from "./../../../firebase.init";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import { Button, Form } from "react-bootstrap";
 
 const Register = () => {
+  const [agree, setAgree] = useState(false);
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
   const navigate = useNavigate();
@@ -21,19 +23,36 @@ const Register = () => {
     const name = event.target.name.value;
     const email = event.target.email.value;
     const password = event.target.password.value;
-    createUserWithEmailAndPassword(email, password);
+    const agree = event.target.terms.checked;
+    if (agree) {
+      createUserWithEmailAndPassword(email, password);
+    }
   };
 
   return (
-    <div className="register-form">
+    <div className="register-form w-25 mx-auto mt-5">
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
-        <input type="text" name="name" id="" placeholder="Your Name" />
-        <br />
-        <input type="email" name="email" id="" placeholder="Email" />
-        <br />
-        <input type="password" name="password" id="" placeholder="Password" />
-        <input type="submit" value="Register" />
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control type="email" placeholder="Enter email" />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" placeholder="Password" />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicCheckbox">
+          <Form.Check
+            onClick={() => setAgree(!agree)}
+            type="checkbox"
+            label="Check me out"
+            className={` ${agree ? "" : "text-danger"}`}
+          />
+        </Form.Group>
+        <Button disabled={!agree} variant="primary" type="submit">
+          Register
+        </Button>
       </form>
 
       <p>
